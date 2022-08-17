@@ -1,0 +1,12 @@
+---
+- name: deploy arcgis datastore
+  hosts: all
+  become: false
+  roles:
+    - general
+    - common
+    - arcgisdatastore
+  vars_files:
+    - vars_arcgisdatastore.yaml
+  # vars:
+  #     ansible_python_interpreter: c:\Python39\bin

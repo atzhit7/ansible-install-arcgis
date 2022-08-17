@@ -1,0 +1,19 @@
+# For built boxes
+*.box
+.vagrant
+
+# key_info
+*keypair*
+
+#authorized_keys
+*id_rsa*
+
+# ansible files
+*.retry
+
+.python-version
+.ruby-version
+vendor/
+.bundle
+
+*.pem

@@ -1,0 +1,54 @@
+---
+- include_tasks: createuser.yaml
+  when:
+    - ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" or ansible_distribution == "Red Hat Enterprise Linux"
+- include_tasks: win_createuser.yaml
+  when:
+    - ansible_os_family == "Windows"
+- include_tasks: copyfiles.yaml
+  when:
+    - ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" or ansible_distribution == "Red Hat Enterprise Linux"
+- include_tasks: win_copyfiles.yaml
+  when:
+    - ansible_os_family == "Windows"
+- include_tasks: apply_limits.yaml
+  when:
+    - ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" or ansible_distribution == "Red Hat Enterprise Linux"
+- include_tasks: install_l10npackage.yaml
+  when:
+    - ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" or ansible_distribution == "Red Hat Enterprise Linux"
+- include_tasks: enable_firewall.yaml
+  when:
+    - ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" or ansible_distribution == "Red Hat Enterprise Linux"
+- include_tasks: win_enable_firewall.yaml
+  when:
+    - ansible_os_family == "Windows"
+- include_tasks: win_install_visualc.yaml
+  when:
+    - ansible_os_family == "Windows"
+
+### aws example
+# - include_tasks: createuser_using_ssm.yaml
+#   when:
+#     - ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" or ansible_distribution == "Red Hat Enterprise Linux"
+# - include_tasks: win_createuser_using_ssm.yaml
+#   when:
+#     - ansible_os_family == "Windows"
+# - include_tasks: copyfiles_s3.yaml
+#   when:
+#     - ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" or ansible_distribution == "Red Hat Enterprise Linux"
+# - include_tasks: win_copyfiles_s3.yaml
+#   when:
+#     - ansible_os_family == "Windows"
+# - include_tasks: apply_limits.yaml
+#   when:
+#     - ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" or ansible_distribution == "Red Hat Enterprise Linux"
+# - include_tasks: install_l10npackage.yaml
+#   when:
+#     - ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" or ansible_distribution == "Red Hat Enterprise Linux"
+# - include_tasks: enable_firewall.yaml
+#   when:
+#     - ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" or ansible_distribution == "Red Hat Enterprise Linux"
+# - include_tasks: win_enable_firewall.yaml
+#   when:
+#     - ansible_os_family == "Windows"

@@ -1,0 +1,27 @@
+---
+- include_tasks: install.yaml
+  when:
+    - ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" or ansible_distribution == "Red Hat Enterprise Linux"
+- include_tasks: win_install.yaml
+  when:
+    - ansible_os_family == "Windows"
+- include_tasks: post_install.yaml
+  when:
+    - ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" or ansible_distribution == "Red Hat Enterprise Linux"
+- include_tasks: win_post_install.yaml
+  when:
+    - ansible_os_family == "Windows"
+
+### aws
+# - include_tasks: install.yaml
+#   when:
+#     - ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" or ansible_distribution == "Red Hat Enterprise Linux"
+# - include_tasks: win_install.yaml
+#   when:
+#     - ansible_os_family == "Windows"
+# - include_tasks: post_install.yaml
+#   when:
+#     - ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" or ansible_distribution == "Red Hat Enterprise Linux"
+# - include_tasks: win_post_install_rescue_s3.yaml
+#   when:
+#     - ansible_os_family == "Windows"

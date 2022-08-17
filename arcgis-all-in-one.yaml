@@ -1,0 +1,48 @@
+---
+# if arranging the same name variables. Only one section is required.
+# - name: install arcgis
+#   hosts: arcgisnode
+#   become: false
+#   roles:
+#     - general
+#     - common
+#     - arcgisdatastore
+#     - arcgisserver
+#     - arcgisportal
+#   vars_files:
+#     - vars_arcgisdatastore.yaml
+#     - vars_arcgisserver.yaml
+#     - vars_arcgisportal.yaml
+
+# At this time, same variables are listed in each variable files.
+# So split each components installation about this.
+- name: install arcgis datastore in single node
+  hosts: all
+  become: false
+  roles:
+    - general
+    - common
+    - arcgisdatastore
+  vars_files:
+    - vars_arcgisdatastore.yaml
+
+- name: install arcgis server in single node
+  hosts: all
+  become: false
+  roles:
+    - general
+    - common
+    - arcgisserver
+  vars_files:
+    - vars_arcgisserver.yaml
+
+- name: install arcgis portal in single node
+  hosts: all
+  become: false
+  roles:
+    - general
+    - common
+    - arcgisportal
+  vars_files:
+    - vars_arcgisportal.yaml
+  

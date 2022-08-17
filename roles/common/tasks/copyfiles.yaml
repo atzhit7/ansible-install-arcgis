@@ -1,0 +1,32 @@
+---
+- name: create the temporal directory for installers
+  file:
+    path: "{{ remote_temp_dest_dir }}"
+    state: directory
+    owner: "{{ arcgis_service_account }}"
+    mode: 0755
+
+- name: copy installers
+  copy:
+    src: "{{ item }}"
+    dest: "{{ remote_temp_dest_dir }}"
+    mode: 0755
+    owner: "{{ arcgis_service_account }}"
+    force: no
+  loop: "{{ copy_local_files }}"
+  when: item is defined
+
+- name: create the extract directory for installers
+  file:
+    path: "{{ remote_extract_dest_dir }}"
+    state: directory
+    owner: "{{ arcgis_service_account }}"
+    mode: 0755
+    force: no
+    
+- name: unzip installers
+  unarchive:
+    src: "{{ remote_temp_dest_dir }}/{{ copy_files[0] | split('/') | last }}"
+    dest: "{{ remote_extract_dest_dir }}"
+    owner: "{{ arcgis_service_account }}"
+    remote_src: yes

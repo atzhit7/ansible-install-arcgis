@@ -1,0 +1,7 @@
+---
+- name: install arcgis
+  shell: "{{ setup_webstyle_command }}"
+  become_user: "{{ arcgis_service_account }}"
+  args:
+    chdir: "{{ setup_command_location }}"
+    executable: /bin/bash

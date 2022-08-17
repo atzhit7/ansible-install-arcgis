@@ -1,0 +1,38 @@
+---
+# - name: install chocolatey
+#   win_shell: "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"
+
+# - name: install python3
+#   win_shell: choco install -y python3
+
+# - name: install pip
+#   win_shell: choco install -y pip
+
+# - name: Ensure botocore and boto3 modules are installed
+#   pip:
+#     name: [ "boto3", "botocore"]
+#     extra_args: "--user"
+
+- name: Ensure Chocolatey itself is installed
+  win_chocolatey:
+    name: chocolatey
+    state: present
+
+- name: Install aws cli v2
+  win_chocolatey:
+    name: awscli
+    version: '2.7.11'
+    state: present
+
+# - name: Install python 3.9
+#   win_chocolatey:
+#     name: python
+#     version: 3.9
+#     state: absent
+
+- name: refresh env
+  win_shell: refreshenv
+
+# - name: Ensure botocore and boto3 modules are installed
+#   win_shell: pip install botocore boto3 --user
+

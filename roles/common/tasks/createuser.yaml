@@ -1,0 +1,12 @@
+---
+- name: Create a group arcgis
+  group:
+    name: "{{ arcgis_service_account_group }}"
+    state: present
+
+- name: Create an arcgis user
+  user:
+    name: "{{ arcgis_service_account }}"
+    password: "{{ arcgis_service_account_pw }}"
+    state: present
+    group: "{{ arcgis_service_account_group }}"

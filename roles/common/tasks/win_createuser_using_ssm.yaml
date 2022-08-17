@@ -1,0 +1,19 @@
+---
+- name: get secrets with ssm paramter store
+  set_fact:
+    initpass:
+      secret: "{{ lookup('aws_ssm', '/Password/agent_sa') }}"
+
+- name: 'output secrets'
+  debug: var="{{ item }}"
+  with_items:
+    - "initpass.secret"
+    - "initpass.not_exist"
+
+- name: Create an arcgis user
+  win_user:
+    name: "{{ arcgis_service_account }}"
+    password: "{{ initpass.secret }}"
+    user_cannot_change_password: yes
+    password_never_expires: yes
+    update_password: on_create

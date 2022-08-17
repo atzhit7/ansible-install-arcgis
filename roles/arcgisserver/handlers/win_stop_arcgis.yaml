@@ -1,0 +1,7 @@
+---
+- name: stop arcgis win service
+  win_service:
+    name: "{{ win_service_name }}"
+    state: stopped
+    start_mode: manual
+    

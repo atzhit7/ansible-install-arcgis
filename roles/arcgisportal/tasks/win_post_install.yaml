@@ -1,0 +1,19 @@
+---
+- name: Check if arcgis installation is complete
+  async_status:
+    jid: "{{ install_arcgis.ansible_job_id }}"
+  register: job_result
+  until: job_result.finished
+  delay: 10
+  retries: 120
+  changed_when: false
+  vars:
+    ansible_winrm_operation_timeout_sec: 120
+    ansible_winrm_read_timeout_sec: 150
+
+- name: Stop arcgis service
+  win_shell: echo restart arcgis service
+  args:
+    executable: cmd
+  notify: stop arcgis win service
+  when: job_result is succeeded

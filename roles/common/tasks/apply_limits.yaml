@@ -1,0 +1,76 @@
+# - name: limits conf apply
+#   copy:
+#     src: /mnt/d/work/dev/iac/arcgis-goldenimage/scripts/limits.conf
+#     dest: /etc/security/limits.conf
+#     mode: 0644
+#     follow: yes
+- name: requirement for agent_ma current
+  shell: ulimit -Su -Hu
+  become_user: "{{ arcgis_service_account }}"
+  register: pam_limits_agent_ma_current
+  args:
+    executable: /bin/bash
+  changed_when: no
+
+- name: check pam
+  debug:
+    msg: "{{ pam_limits_agent_ma_current.stdout }}"
+
+# - name: limits conf apply
+#   pam_limits:
+#     domain: "{{ item.domain }}"
+#     limit_type: "{{ item.limit_type }}"
+#     limit_item: "{{ item.limit_item }}"
+#     value: "{{ item.value }}"
+#   with_items:
+#     - domain: agent_sa
+#       limit_type: soft
+#       limit_item: nofile
+#       value: 65535
+#     - domain: agent_sa
+#       limit_type: hard
+#       limit_item: nofile
+#       value: 65535
+#     - domain: agent_sa
+#       limit_type: soft
+#       limit_item: nproc
+#       value: 25059
+#     - domain: agent_sa
+#       limit_type: hard
+#       limit_item: nproc
+#       value: 25059
+
+- name: Apply the limits for systemd step1
+  file:
+    path: /etc/systemd/system/sshd.service.d
+    state: directory
+    owner: root
+    mode: 0751
+    
+- name: Apply the limits for systemd step2
+  copy:
+    src: /mnt/d/work/dev/iac/arcgis-goldenimage/scripts/override.conf
+    dest: /etc/systemd/system/sshd.service.d/override.conf
+    mode: 0644
+    owner: root
+    force: no
+  # notify: #run at last...#
+  #   - run daemon_reload
+  #   - restart systemd sshd
+  #   - Reset SSH connection to allow user changes
+
+- name: run daemon_reload
+  systemd:
+    daemon_reload: yes
+
+- name: restart systemd sshd
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: sshd
+
+- name: Reset SSH connection to allow user changes
+  meta: reset_connection
+
+
+

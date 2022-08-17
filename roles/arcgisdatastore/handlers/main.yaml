@@ -1,0 +1,3 @@
+---
+- import_tasks: restart_arcgis.yaml
+- import_tasks: win_stop_arcgis.yaml

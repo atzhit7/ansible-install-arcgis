@@ -1,0 +1,65 @@
+---
+# trailing / or \ is not used basically
+# win_ prefix variables are for windows host.
+
+# common vars
+arcgis_version: VERSION YOU WANT TO INSTALL(ie. 10.9.1, 11.0. This is used in extract directory)
+arcgis_service_account_group: ARCGIS SERVICE ACCOUNT GROUP FOR LINUX
+arcgis_service_account: ARCGIS SERVICE ACCOUNT
+arcgis_service_account_pw: ARCGIS SERVICE ACCOUNT ENCRYPTED PASSWORD
+
+# for Windows
+win_arcgis_component: ArcGISServer
+win_product_id: '{CHECK SOFTWARE PRODUCTCODE}'
+# product_id is listed here: https://support.esri.com/en/Technical-Article/000013200
+win_remote_temp_dest_dir: FOR COPY-DESTINATEION DIRECCTORY
+win_remote_extract_dest_dir: FOR EXTRACTION OF INSTALLERS DIRECTORY
+win_copy_local_files:
+  - ARCGIS SERVER INSTALLER FILE PATH
+win_install_dir: INSTALL DIRECTORY
+win_install_python_dir: INSTALL PYTHON DIRECTORY
+win_server_dir: SERVICE DIRECTORY
+win_config_store_dir: SERVER CONFIG DIRECTORY
+win_install_log_dir: INSTALLATION LOG DIRECTORY
+
+win_install_log_path: "{{ win_install_log_dir }}\\arcgis-server.log"
+win_setup_msi_path: "{{ win_remote_extract_dest_dir }}\\ArcGIS {{ arcgis_version }}\\{{ win_arcgis_component }}\\SetupFiles\\setup.msi"
+win_setup_msi_with_log_arguments: "/qn ACCEPTEULA{{'='}}yes INSTALLDIR{{'='}}{{ win_install_dir }} INSTALLDIR1{{'='}}{{ win_install_python_dir }} USER_NAME{{'='}}{{ arcgis_service_account }} PASSWORD{{'='}}{{ arcgis_service_account_pw }} /L*V {{ win_install_log_path }}"
+win_setup_msi_argumentlist: "/i \"\"{{ win_setup_msi_path }}\"\" {{ win_setup_msi_with_log_arguments }}"
+win_setup_msi_process_command: "Start-Process 'msiexec' -ArgumentList \"{{ win_setup_msi_argumentlist }}\" -Wait" 
+# firewall settings
+arcgisports:
+  - 6080
+  - 6443
+# service name parameter
+win_service_name: "ArcGIS Server"
+
+# for Linux
+remote_temp_dest_dir: /tmp/arcgis
+remote_extract_dest_dir: "/home/{{ arcgis_service_account }}/setup"
+copy_local_files:
+  - ARCGIS SERVER INSTALLER FILE PATH
+install_dir: INSTALL DIRECTORY
+server_dir: SERVER CONFIG DIRECTORY
+config_store_dir: "CONFIG STORE DIRECTORY"
+setup_command: "./Setup -m silent --verbose -l yes -a {{ remote_extract_dest_dir }}/{{ copy_files[1] | basename }} -d {{ install_dir }}"
+setup_command_location: "{{ remote_extract_dest_dir }}/ArcGISServer/"
+manual_start_shell: "./startserver.sh"
+manual_start_shell_location: "{{ install_dir }}/arcgis/server/"
+service_unit_path: "{{ install_dir }}/arcgis/server/framework/etc/scripts/arcgisserver.service"
+service_unit_dest_path: /etc/systemd/system/arcgisserver.service
+createsite_shell: "./createsite.sh -u {{ site_admin_user }} -p {{ site_admin_user_pw }} -d {{ server_dir }} -c {{ config_store_dir }}"
+createsite_shell_location: "{{ install_dir }}/arcgis/server/tools/createsite"
+# service name parameter
+service_name: arcgisserver
+# OPTIONS for REDHAT
+rhelaccount: YOUR REDHAT ACCOUNT
+rhelaccount_password: YOUR REDHAT ACCOUNT PASSWORD
+
+# OPTIONS for AWS
+installer_bucket_name: YOUR BUCKET NAME HOSTING INSTALLERS
+logs_bucket_name: YOUR BUCKET NAME for LOGS
+win_copy_s3_files:
+  - ARCGIS SERVER INSTALLER FILE
+copy_s3_files:
+  - ARCGIS SERVER INSTALLER FILE

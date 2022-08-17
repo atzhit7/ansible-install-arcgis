@@ -1,0 +1,32 @@
+---
+- name: create the temporal directory for installers
+  file:
+    path: "{{ remote_temp_dest_dir }}"
+    state: directory
+    owner: "{{ arcgis_service_account }}"
+    mode: 0755
+
+# donwload installers from s3
+- name: download installer from s3
+  aws_s3:
+    bucket: egihs-arcgis-installer
+    object: "/{{ item }}"
+    dest: "{{ remote_temp_dest_dir }}/{{ item }}"
+    mode: get
+  loop: "{{ copy_s3_files }}"
+  when: item is defined
+
+- name: create the extract directory for installers
+  file:
+    path: "{{ remote_extract_dest_dir }}"
+    state: directory
+    owner: "{{ arcgis_service_account }}"
+    mode: 0755
+    force: no
+    
+- name: unzip installers
+  unarchive:
+    src: "{{ remote_temp_dest_dir }}/{{ copy_files[0] | split('/') | last }}"
+    dest: "{{ remote_extract_dest_dir }}"
+    owner: "{{ arcgis_service_account }}"
+    remote_src: yes

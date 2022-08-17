@@ -1,0 +1,32 @@
+---
+- name: Replace arcgis serivce unit file
+  replace:
+    path: "{{ service_unit_path }}"
+    regexp: ^#?# TasksMax=512$
+    replace: TaskMax=512
+    backup: yes
+
+- name: copy arcgis service unit file
+  copy:
+    src: "{{ service_unit_path }}"
+    dest: "{{ service_unit_dest_path }}"
+    mode: 0600
+    owner: root
+    group: root
+    force: no
+    remote_src: yes
+  notify: restart arcgis service
+
+# - name: enable arcgis server service
+#   systemd:
+#     name: arcgisserver
+#     enabled: yes
+#     masked: no
+#     enabled: restarted
+
+# - name: enable arcgis server service
+#   systemd:
+#     name: arcgisserver
+#     state: started
+
+# transfer logs to s3 with powershell for aws

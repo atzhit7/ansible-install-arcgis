@@ -1,0 +1,31 @@
+---
+- name: install arcgis datastore in single node
+  hosts: arcgisdatastorenode
+  become: false
+  roles:
+    - general
+    - common
+    - arcgisdatastore
+  vars_files:
+    - vars_arcgisdatastore.yaml
+
+- name: install arcgis server in single node
+  hosts: arcgisservernode
+  become: false
+  roles:
+    - general
+    - common
+    - arcgisserver
+  vars_files:
+    - vars_arcgisserver.yaml
+
+- name: install arcgis portal in single node
+  hosts: arcgisportalnode
+  become: false
+  roles:
+    - general
+    - common
+    - arcgisportal
+  vars_files:
+    - vars_arcgisportal.yaml
+  

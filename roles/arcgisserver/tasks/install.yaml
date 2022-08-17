@@ -1,0 +1,22 @@
+---
+- name: create installdirecotry
+  file:
+    path: "{{ install_dir }}/arcgis"
+    state: directory
+    owner: "{{ arcgis_service_account }}"
+    mode: 0755
+    force: no
+    
+- name: install arcgis
+  shell: "{{ setup_command }}"
+  become_user: "{{ arcgis_service_account }}"
+  args:
+    chdir: "{{ setup_command_location }}"
+    executable: /bin/bash
+
+- name: start arcgis service manually
+  shell: "{{ manual_start_shell }}"
+  become_user: "{{ arcgis_service_account }}"
+  args:
+    chdir: "{{ manual_start_shell_location }}"
+    executable: /bin/bash

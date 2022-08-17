@@ -1,0 +1,23 @@
+---
+- name: Register by username/password
+  redhat_subscription:
+    username: "{{ rhelaccount }}"
+    password: "{{ rhelaccount_password }}"
+    auto_attach: false
+    force_register: true
+  register: result
+  until: result is succeeded
+
+- name: Register result
+  debug:
+    msg: "{{ result.stdout }}"
+
+- name: subscription auto attach
+  shell: |
+    subscription-manager attach --auto
+  register: resultattach
+  until: resultattach is succeeded
+
+- name: subscription attach result
+  debug:
+    msg: "{{ resultattach.stdout }}"

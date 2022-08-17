@@ -1,0 +1,7 @@
+---
+- name: restart arcgis service
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: "{{ service_name }}"
+    enabled: yes

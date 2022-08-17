@@ -1,0 +1,9 @@
+---
+- name: restart systemd sshd
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: sshd
+
+- name: Reset SSH connection to allow user changes
+  meta: reset_connection

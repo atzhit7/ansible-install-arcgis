@@ -1,0 +1,2 @@
+---
+- import_tasks: win_restart_sshserver.yaml

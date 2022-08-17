@@ -1,0 +1,11 @@
+---
+- name: Firewall rule to allow RDP on TCP port 3389
+  community.windows.win_firewall_rule:
+    name: arcgis firewalls
+    localport: "{{ item }}"
+    action: allow
+    direction: in
+    protocol: tcp
+    state: present
+    enabled: yes
+  loop: "{{ arcgisports }}"

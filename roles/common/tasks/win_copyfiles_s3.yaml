@@ -1,0 +1,44 @@
+---
+- name: create the temporal and extract directory for installers
+  win_file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+  - "{{ win_remote_temp_dest_dir }}"
+  - "{{ win_remote_extract_dest_dir }}"
+
+- name: add acl to the temporal directory
+  win_acl:
+    path: "{{ item }}"
+    user: "{{ arcgis_service_account }}"
+    rights: FullControl
+    type: allow
+    state: present
+    inherit: ContainerInherit, ObjectInherit
+  loop:
+  - "{{ win_remote_temp_dest_dir }}"
+  - "{{ win_remote_extract_dest_dir }}"
+
+- name: download installer from s3
+  win_shell: "Copy-S3Object -BucketName {{ installer_bucket_name }} -Key {{ item }} -LocalFile {{ win_remote_temp_dest_dir }}/{{ item }}"
+  loop: "{{ win_copy_s3_files }}"
+  when: item is defined
+
+- name: check if extract installers
+  win_stat:
+    path: "{{ win_remote_extract_dest_dir }}\\ArcGIS {{ arcgis_version }}\\{{ win_arcgis_component }}"
+  register: extract_state
+
+### currently more handling to check if webstyle is extracted. but this is only for portal.
+# - name: check if extract installers
+#   win_stat:
+#     path: "{{ win_remote_extract_dest_dir }}\\ArcGIS {{ arcgis_version }}\\{{ win_arcgis_webstyle }}"
+#   register: extract_webstyle_state
+#   when: win_arcgis_webstyle is defined
+
+- name: unzip installers on aws
+  win_shell: "{{ win_remote_temp_dest_dir }}\\{{ item | basename }} /s /d {{ win_remote_extract_dest_dir }}"
+  args:
+    executable: cmd.exe
+  loop: "{{ win_copy_s3_files }}"
+  when: item is defined and not extract_state.stat.exists

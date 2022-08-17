@@ -1,0 +1,41 @@
+---
+- name: create the install directories
+  win_file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+  - "{{ win_install_dir }}"
+  - "{{ win_datastore_dir }}"
+  - "{{ win_install_log_dir }}"
+
+- name: add acl to the temporal directory
+  win_acl:
+    path: "{{ item }}"
+    user: "{{ arcgis_service_account }}"
+    rights: FullControl
+    type: allow
+    state: present
+    inherit: ContainerInherit, ObjectInherit
+  loop:
+  - "{{ win_install_dir }}"
+  - "{{ win_datastore_dir }}"
+  - "{{ win_install_log_dir }}"
+
+# - name: install arcgis
+#   win_shell: "{{ win_setup_command }}"
+#   args:
+#     chdir: "{{ win_setup_command_location }}"
+#     executable: cmd.exe
+
+# - name: install arcgis
+#   win_shell: "{{ win_setup_msi_process_command }}"
+
+- name: install arcgis
+  register: install_arcgis
+  async: 900
+  poll: 0
+  win_package:
+    path: "{{ win_setup_msi_path }}"
+    product_id: "{{ win_product_id }}"
+    arguments: "{{ win_setup_msi_with_log_arguments }}"
+

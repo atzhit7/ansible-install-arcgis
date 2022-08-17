@@ -1,0 +1,12 @@
+---
+- name: deploy arcgis server
+  hosts: all
+  become: false
+  roles:
+    - general
+    - common
+    - arcgisserver
+  vars_files:
+    - vars_arcgisserver.yaml
+  # vars:
+  #     ansible_python_interpreter: c:\Python39\bin
